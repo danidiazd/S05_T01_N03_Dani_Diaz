@@ -9,11 +9,12 @@ public class Flor {
     private String paisFlor;
 
 
-   public Flor(){}
+    public Flor() {
+    }
 
     public Flor(String nameFlor, String paisFlor) {
-       this.nameFlor = nameFlor;
-       this.paisFlor = paisFlor;
+        this.nameFlor = nameFlor;
+        this.paisFlor = paisFlor;
     }
 
     public Integer getPk_FlorID() {

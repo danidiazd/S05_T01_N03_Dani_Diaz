@@ -5,13 +5,14 @@ import cat.itacademy.barcelonactiva.diaz.dani.s05.t01.n03.model.dto.CountryWorld
 import cat.itacademy.barcelonactiva.diaz.dani.s05.t01.n03.model.dto.FlorDTO;
 import cat.itacademy.barcelonactiva.diaz.dani.s05.t01.n03.model.services.FlorService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import jakarta.validation.Valid;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.Binding;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,15 +25,12 @@ public class FlorController {
 
     @Operation(summary = "List Flowers",
             description = "This method retrieves a list of all flowers.")
-    @GetMapping({"/",""})
+    @GetMapping({"/", ""})
     public String listFlower(Model model) {
-       /* List<FlorDTO> florDTOList = florService.getAllFlowers();
+        List<FlorDTO> florDTOList = florService.getAllFlowers();
         model.addAttribute("titulo", "Lista Flores");
         model.addAttribute("flowers", florDTOList);
         return "views/flowers/list";
-
-        */
-        return florService.getAllFlowers();
     }
 
     @Operation(summary = "Show Form to Add Flower",
@@ -69,12 +67,12 @@ public class FlorController {
     @GetMapping("/edit/{id}")
     public String updateFlower(@PathVariable("id") Integer flowerId, Model model) {
 
-     //   Flor flor = florService.getOneFlower(flowerId);
+        Flor flor = florService.getOne(flowerId);
         List<CountryWorld> countryWorldList = Arrays.stream(CountryWorld.values()).toList();
 
         model.addAttribute("titulo", "Editar flor");
         model.addAttribute("paises", countryWorldList);
-   //     model.addAttribute("flor", flor);
+        model.addAttribute("flor", flor);
         return "/views/flowers/add";
     }
 

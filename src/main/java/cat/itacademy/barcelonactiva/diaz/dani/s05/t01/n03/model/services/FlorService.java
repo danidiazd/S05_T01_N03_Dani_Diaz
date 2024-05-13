@@ -2,6 +2,10 @@ package cat.itacademy.barcelonactiva.diaz.dani.s05.t01.n03.model.services;
 
 import cat.itacademy.barcelonactiva.diaz.dani.s05.t01.n03.model.domain.Flor;
 import cat.itacademy.barcelonactiva.diaz.dani.s05.t01.n03.model.dto.FlorDTO;
+import cat.itacademy.barcelonactiva.diaz.dani.s05.t01.n03.model.services.exceptions.FlorList;
+import cat.itacademy.barcelonactiva.diaz.dani.s05.t01.n03.model.services.exceptions.FlorNoCreada;
+import cat.itacademy.barcelonactiva.diaz.dani.s05.t01.n03.model.services.exceptions.FlorNoID;
+import cat.itacademy.barcelonactiva.diaz.dani.s05.t01.n03.model.services.exceptions.FlorNula;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,59 +21,86 @@ public class FlorService implements IFlorService {
 
     @Override
     public FlorDTO addFlower(Flor flor) {
-        return webClient.post()
-                .uri("/flower/add")
-                .bodyValue(flor)
-                .retrieve()
-                .bodyToMono(FlorDTO.class)
-                .block();
+        try {
+            return webClient.post()
+                    .uri("/webservice/add")
+                    .bodyValue(flor)
+                    .retrieve()
+                    .bodyToMono(FlorDTO.class)
+                    .block();
+        } catch (Exception e) {
+            throw new FlorNoCreada();
+        }
     }
 
 
     @Override
     public FlorDTO saveFlower(Flor flor) {
-        if (flor.getPk_FlorID() == null) {
-            return addFlower(flor);
-        } else {
-            return webClient.put()
-                    .uri("/flower/update")
-                    .bodyValue(flor)
-                    .retrieve()
-                    .bodyToMono(FlorDTO.class)
-                    .block();
+        try {
+            if (flor.getPk_FlorID() == null) {
+                return addFlower(flor);
+            } else {
+                return webClient.put()
+                        .uri("/webservice/update")
+                        .bodyValue(flor)
+                        .retrieve()
+                        .bodyToMono(FlorDTO.class)
+                        .block();
+            }
+        } catch (Exception e) {
+            throw new FlorNula();
         }
     }
 
     @Override
     public void deleteFlower(Integer id) {
-
-        webClient.delete()
-                .uri("/flower/delete")
-                .retrieve()
-                .toBodilessEntity()
-                .block();
+        try {
+            webClient.delete()
+                    .uri("/webservice/delete")
+                    .retrieve()
+                    .toBodilessEntity()
+                    .block();
+        } catch (Exception e) {
+            throw new FlorNoID(id);
+        }
     }
 
     @Override
     public FlorDTO getOneFlowerDTO(Integer id) {
-        return webClient.get()
-                .uri("/flower/getOneFlower/{id}",id)
-                .retrieve()
-                .bodyToMono(FlorDTO.class)
-                .block();
+        try {
+            return webClient.get()
+                    .uri("/webservice/getOne/{id}", id)
+                    .retrieve()
+                    .bodyToMono(FlorDTO.class)
+                    .block();
+        } catch (Exception e) {
+            throw new FlorNoID(id);
+        }
+    }
+
+    public Flor getOne(Integer id) {
+        try {
+            return webClient.get()
+                    .uri("/webservice/getOne/{id}", id)
+                    .retrieve()
+                    .bodyToMono(Flor.class)
+                    .block();
+        } catch (Exception e) {
+            throw new FlorNoID(id);
+        }
     }
 
 
     @Override
-    public String getAllFlowers() {
-        return webClient.get()
-                .uri("/flower/getAll")
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-    }
-
-    private  FlorDTO convertToDTO(Flor flor) {
-        return new FlorDTO(flor.getPk_FlorID(), flor.getNameFlor(), flor.getPaisFlor());
+    public List<FlorDTO> getAllFlowers() {
+        try {
+            return webClient.get()
+                    .uri("/webservice/getAll")
+                    .retrieve()
+                    .bodyToFlux(FlorDTO.class)
+                    .collectList().block();
+        } catch (Exception e) {
+            throw new FlorList();
+        }
     }
 }

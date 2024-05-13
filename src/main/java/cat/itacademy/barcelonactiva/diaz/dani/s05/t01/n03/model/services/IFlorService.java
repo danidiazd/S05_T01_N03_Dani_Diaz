@@ -15,6 +15,5 @@ public interface IFlorService {
 
     FlorDTO getOneFlowerDTO(Integer id);
 
-
-    String getAllFlowers();
+    List<FlorDTO> getAllFlowers();
 }
