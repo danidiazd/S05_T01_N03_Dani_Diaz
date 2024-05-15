@@ -28,7 +28,7 @@ public class FlorService implements IFlorService {
                     .retrieve()
                     .bodyToMono(FlorDTO.class)
                     .block();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new FlorNoCreada();
         }
     }
@@ -47,7 +47,7 @@ public class FlorService implements IFlorService {
                         .bodyToMono(FlorDTO.class)
                         .block();
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new FlorNula();
         }
     }
@@ -60,7 +60,7 @@ public class FlorService implements IFlorService {
                     .retrieve()
                     .toBodilessEntity()
                     .block();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new FlorNoID(id);
         }
     }
@@ -73,7 +73,7 @@ public class FlorService implements IFlorService {
                     .retrieve()
                     .bodyToMono(FlorDTO.class)
                     .block();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new FlorNoID(id);
         }
     }
@@ -85,7 +85,7 @@ public class FlorService implements IFlorService {
                     .retrieve()
                     .bodyToMono(Flor.class)
                     .block();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new FlorNoID(id);
         }
     }
@@ -99,7 +99,7 @@ public class FlorService implements IFlorService {
                     .retrieve()
                     .bodyToFlux(FlorDTO.class)
                     .collectList().block();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             throw new FlorList();
         }
     }
